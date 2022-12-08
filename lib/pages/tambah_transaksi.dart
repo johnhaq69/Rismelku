@@ -15,7 +15,12 @@ class _TambahTransaksiScreenState extends State<TambahTransaksiScreen> {
     'Bekatul',
     'Gabah',
   ];
+  List<String> listJenisTransaksi = [
+    'Keluar',
+    'Masuk',
+  ];
   String? barang;
+  String? jenisTransaksi;
 
   TextEditingController beratBarangController = TextEditingController();
 
@@ -44,6 +49,31 @@ class _TambahTransaksiScreenState extends State<TambahTransaksiScreen> {
         ),
         child: Column(
           children: [
+            Row(
+              children: <Widget>[
+                Text(
+                  "Jenis Transkasi : ",
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                ),
+              ],
+            ),
+            DropdownButtonFormField(
+              onChanged: (String? value) {
+                setState(() {
+                  jenisTransaksi = value;
+                });
+              },
+              value: jenisTransaksi,
+              items: listJenisTransaksi.map((String value) {
+                return DropdownMenuItem(
+                  child: Text(value),
+                  value: value,
+                );
+              }).toList(),
+            ),
+            SizedBox(
+              height: 15,
+            ),
             Row(
               children: <Widget>[
                 Text(
@@ -85,6 +115,28 @@ class _TambahTransaksiScreenState extends State<TambahTransaksiScreen> {
                 border: UnderlineInputBorder(),
                 filled: true,
                 fillColor: Colors.white,
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 45),
+                  primary: thirdColor,
+                  shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(20.0),
+                  ),
+                ),
+                onPressed: () {},
+                child: Text(
+                  "Simpan Transaksi",
+                  style: TextStyle(
+                    fontSize: 19,
+                  ),
+                ),
               ),
             ),
           ],
