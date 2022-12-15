@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rismelku/pages/edit_transaksi.dart';
 import 'package:rismelku/theme.dart';
+import 'package:rismelku/pages/main_screen.dart';
 
 class TransaksiCard extends StatelessWidget {
   TransaksiCard({super.key});
@@ -43,11 +45,25 @@ class TransaksiCard extends StatelessWidget {
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditTransaksiScreen(
+                            idTransaksi: 1,
+                            jenisTransaksi: "Keluar",
+                            jenisBarang: "Beras",
+                            beratBarang: "50",
+                          ),
+                        ),
+                      );
+                    },
                     icon: Icon(Icons.edit),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      MainScreen().dialogHapus(context, 1, "Transaksi 1");
+                    },
                     icon: Icon(Icons.delete),
                   ),
                 ],
