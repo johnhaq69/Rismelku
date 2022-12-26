@@ -99,7 +99,7 @@ class MainScreen extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(left: 25),
               child: Text(
-                "14 November 2022",
+                "26 Desember 2022",
                 style: TextStyle(
                   fontFamily: 'OkineSans',
                   fontSize: 18,

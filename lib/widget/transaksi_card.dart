@@ -2,14 +2,88 @@ import 'package:flutter/material.dart';
 import 'package:rismelku/pages/edit_transaksi.dart';
 import 'package:rismelku/theme.dart';
 import 'package:rismelku/pages/main_screen.dart';
+import 'package:rismelku/util/db_helper.dart';
 
-class TransaksiCard extends StatelessWidget {
+class TransaksiCard extends StatefulWidget {
   TransaksiCard({super.key});
 
-  List transaksi = [
-    {"title": "Transaksi 1", "subtitle": "Masuk : 7 Ton"},
-    {"title": "Transaksi 2", "subtitle": "Keluar : 5 Ton"}
-  ];
+  @override
+  State<TransaksiCard> createState() => _TransaksiCardState();
+}
+
+class _TransaksiCardState extends State<TransaksiCard> {
+  @override
+  void initState() {
+    super.initState();
+    refreshData();
+  }
+
+  List<Map<String, dynamic>> transaksi = [];
+
+  void refreshData() async {
+    final data = await SqlHelper.getTransaksi();
+    setState(() {
+      transaksi = data;
+    });
+  }
+
+  Future<void> deleteData(id) async {
+    await SqlHelper.hapusTransaksi(id);
+    notif(context, 'dihapus', Colors.redAccent);
+    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+  }
+
+  void dialogHapus(context, int id, String nama) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(
+            'Yakin menghapus data ' + nama + ' ?',
+          ),
+          backgroundColor: Colors.white,
+          actions: [
+            SizedBox(
+              height: 30,
+              width: 30,
+              child: IconButton(
+                padding: EdgeInsets.all(0),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.cancel,
+                  color: Colors.grey,
+                  size: 30,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            SizedBox(
+              height: 30,
+              width: 30,
+              child: IconButton(
+                padding: EdgeInsets.all(0),
+                onPressed: () {
+                  deleteData(id);
+                },
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.redAccent,
+                  size: 30,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +98,7 @@ class TransaksiCard extends StatelessWidget {
           ),
           child: ListTile(
             title: Text(
-              transaksi[index]["title"],
+              "${transaksi[index]["jenis"]} - ${transaksi[index]["barang"]}",
               style: TextStyle(
                 fontFamily: 'OkineSans',
                 fontSize: 18,
@@ -33,7 +107,7 @@ class TransaksiCard extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              transaksi[index]["subtitle"],
+              "Berat ${transaksi[index]["berat"]} Kg",
               style: TextStyle(
                 fontFamily: 'OkineSans',
                 fontSize: 16,
@@ -50,10 +124,10 @@ class TransaksiCard extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => EditTransaksiScreen(
-                            idTransaksi: 1,
-                            jenisTransaksi: "Keluar",
-                            jenisBarang: "Beras",
-                            beratBarang: "50",
+                            idTransaksi: transaksi[index]["id"],
+                            jenisTransaksi: transaksi[index]["jenis"],
+                            jenisBarang: transaksi[index]["barang"],
+                            beratBarang: transaksi[index]["berat"],
                           ),
                         ),
                       );
@@ -62,7 +136,8 @@ class TransaksiCard extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      MainScreen().dialogHapus(context, 1, "Transaksi 1");
+                      dialogHapus(context, transaksi[index]["id"],
+                          "${transaksi[index]["barang"]} - ${transaksi[index]["berat"]} Kg");
                     },
                     icon: Icon(Icons.delete),
                   ),

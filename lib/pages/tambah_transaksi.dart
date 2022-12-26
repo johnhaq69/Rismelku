@@ -2,6 +2,8 @@ import 'package:rismelku/widget/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:rismelku/theme.dart';
 
+import '../util/db_helper.dart';
+
 class TambahTransaksiScreen extends StatefulWidget {
   const TambahTransaksiScreen({super.key});
 
@@ -23,6 +25,14 @@ class _TambahTransaksiScreenState extends State<TambahTransaksiScreen> {
   String? jenisTransaksi;
 
   TextEditingController beratBarangController = TextEditingController();
+  String dateNow = DateTime.now().toString().substring(0, 10);
+
+  Future<void> tambahData() async {
+    await SqlHelper.tambahTransaksi(
+        jenisTransaksi!, barang!, beratBarangController.text, dateNow);
+    notif(context, 'Ditambahkan', Colors.blue[800]);
+    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +120,6 @@ class _TambahTransaksiScreenState extends State<TambahTransaksiScreen> {
             TextFormField(
               controller: beratBarangController,
               decoration: InputDecoration(
-                labelText: 'Berat Barang',
                 hintText: 'Berat Kg',
                 border: UnderlineInputBorder(),
                 filled: true,
@@ -130,7 +139,9 @@ class _TambahTransaksiScreenState extends State<TambahTransaksiScreen> {
                     borderRadius: new BorderRadius.circular(20.0),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  tambahData();
+                },
                 child: Text(
                   "Simpan Transaksi",
                   style: TextStyle(
