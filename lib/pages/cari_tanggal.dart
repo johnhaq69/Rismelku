@@ -1,3 +1,4 @@
+import 'package:rismelku/pages/hasil_cari_tanggal.dart';
 import 'package:rismelku/widget/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:rismelku/theme.dart';
@@ -12,18 +13,22 @@ class CariTanggalScreen extends StatefulWidget {
 
 class _CariTanggalScreenState extends State<CariTanggalScreen> {
   var tanggalAwal;
+  var tanggalAwalQuery;
   void callDatePicker() async {
     var transaksi = await getDate();
     setState(() {
       tanggalAwal = formatDate(transaksi!, [dd, '/', mm, '/', yyyy]);
+      tanggalAwalQuery = formatDate(transaksi, [yyyy, '-', mm, '-', dd]);
     });
   }
 
   var tanggalAkhir;
+  var tanggalAkhirQuery;
   void callDatePicker2() async {
     var transaksi = await getDate();
     setState(() {
       tanggalAkhir = formatDate(transaksi!, [dd, '/', mm, '/', yyyy]);
+      tanggalAkhirQuery = formatDate(transaksi, [yyyy, '-', mm, '-', dd]);
     });
   }
 
@@ -144,7 +149,17 @@ class _CariTanggalScreenState extends State<CariTanggalScreen> {
                     borderRadius: new BorderRadius.circular(20.0),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HasilCariScreen(
+                        tanggal_awal: tanggalAwalQuery,
+                        tanggal_akhir: tanggalAkhirQuery,
+                      ),
+                    ),
+                  );
+                },
                 child: Text(
                   "Cari Transaksi",
                   style: TextStyle(

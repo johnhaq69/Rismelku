@@ -30,7 +30,7 @@ class _TambahTransaksiScreenState extends State<TambahTransaksiScreen> {
   Future<void> tambahData() async {
     await SqlHelper.tambahTransaksi(
         jenisTransaksi!, barang!, beratBarangController.text, dateNow);
-    notif(context, 'Ditambahkan', Colors.blue[800]);
+    notif(context, 'Data Berhasil Ditambahkan !', Colors.blue[800]);
     Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
   }
 

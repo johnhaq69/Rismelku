@@ -2,6 +2,8 @@ import 'package:rismelku/widget/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:rismelku/theme.dart';
 
+import '../util/db_helper.dart';
+
 class EditTransaksiScreen extends StatefulWidget {
   const EditTransaksiScreen({
     Key? key,
@@ -30,10 +32,27 @@ class _EditTransaksiScreenState extends State<EditTransaksiScreen> {
     'Keluar',
     'Masuk',
   ];
+
   String? barang;
   String? jenisTransaksi;
-
   TextEditingController beratBarangController = TextEditingController();
+
+  String dateNow = DateTime.now().toString().substring(0, 10);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    barang = widget.jenisBarang;
+    jenisTransaksi = widget.jenisTransaksi;
+  }
+
+  Future<void> updateData() async {
+    await SqlHelper.editTransaksi(widget.idTransaksi, jenisTransaksi!, barang!,
+        beratBarangController.text, dateNow);
+    notif(context, 'Data Berhasil Diupdate !', Colors.green[800]);
+    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +143,6 @@ class _EditTransaksiScreenState extends State<EditTransaksiScreen> {
             TextFormField(
               controller: beratBarangController,
               decoration: InputDecoration(
-                labelText: 'Berat Barang',
                 hintText: 'Berat Kg',
                 border: UnderlineInputBorder(),
                 filled: true,
@@ -144,7 +162,9 @@ class _EditTransaksiScreenState extends State<EditTransaksiScreen> {
                     borderRadius: new BorderRadius.circular(20.0),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  updateData();
+                },
                 child: Text(
                   "Simpan Transaksi",
                   style: TextStyle(

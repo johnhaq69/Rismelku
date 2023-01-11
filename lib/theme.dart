@@ -10,7 +10,7 @@ void notif(context, String notif, Color? warna) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       backgroundColor: warna,
-      content: Text('Data Transaksi Berhasil ' + notif + ' !'),
+      content: Text(notif),
       duration: Duration(seconds: 5),
     ),
   );

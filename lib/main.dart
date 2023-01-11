@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'RiceMillKu Hj Wahyah',
+      title: 'Buku RiceMill',
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => LoginScreen(),

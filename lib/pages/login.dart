@@ -1,11 +1,69 @@
+import 'dart:convert';
+
 import 'package:rismelku/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController usernameController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
+
+  void login(String username, String password) async {
+    final hasil = await http.post(
+      Uri.parse("https://rismelku.000webhostapp.com/login.php"),
+      body: {
+        'username': username,
+        'password': password,
+      },
+    );
+    // print(hasil.body['user'][index]['bagian']);
+    Map<String, dynamic> map = json.decode(hasil.body);
+    List<dynamic> data = map["user"];
+    // print(map["user"]);
+    if (map['user'].isEmpty == true) {
+      print("Tidak Ada Data");
+      notif(context, 'Gagal Login !', Colors.redAccent);
+    } else {
+      print(data[0]);
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil("/home", (Route<dynamic> route) => false);
+    }
+  }
+
+  void signup(String username, String password) async {
+    final hasil = await http.post(
+      Uri.parse("https://rismelku.000webhostapp.com/signup.php"),
+      body: {
+        'username': username,
+        'password': password,
+      },
+    );
+    // print(hasil.body['user'][index]['bagian']);
+    Map<String, dynamic> map = json.decode(hasil.body);
+    // print(map["user"]);
+    if (map['user'].isEmpty == false) {
+      print("Tidak Ada Data");
+      notif(context, 'Gagal Sign Up !', Colors.redAccent);
+    } else {
+      print(hasil.body);
+      notif(context, 'Berhasil Sign Up !', Colors.blue[800]);
+    }
+  }
+
+  bool _passwordVisible = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +126,8 @@ class LoginScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: TextFormField(
                 controller: passwordController,
+                obscureText:
+                    !_passwordVisible, //This will obscure text dynamically
                 decoration: InputDecoration(
                   hintText: 'Your Password',
                   border: UnderlineInputBorder(
@@ -77,11 +137,24 @@ class LoginScreen extends StatelessWidget {
                   prefixIcon: Icon(Icons.lock),
                   labelText: 'Password *',
                   fillColor: Colors.white,
+                  // Here is key idea
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      // Based on passwordVisible state choose the icon
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
+                    onPressed: () {
+                      // Update the state i.e. toogle the state of passwordVisible variable
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -108,7 +181,10 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/home');
+                      signup(
+                        usernameController.text,
+                        passwordController.text,
+                      );
                     },
                   ),
                 ),
@@ -138,7 +214,10 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/home');
+                      login(
+                        usernameController.text,
+                        passwordController.text,
+                      );
                     },
                   ),
                 ),

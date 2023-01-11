@@ -9,20 +9,28 @@ import 'package:intl/intl.dart';
 
 import '../util/db_helper.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class HasilCariScreen extends StatefulWidget {
+  const HasilCariScreen({
+    Key? key,
+    required this.tanggal_awal,
+    required this.tanggal_akhir,
+  }) : super(key: key);
+
+  final String tanggal_awal;
+  final String tanggal_akhir;
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<HasilCariScreen> createState() => _HasilCariScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _HasilCariScreenState extends State<HasilCariScreen> {
   List<Map<String, dynamic>> transaksi = [];
 
   void refreshData() async {
     final data = await SqlHelper.getTransaksi(
-        DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        DateFormat('yyyy-MM-dd').format(DateTime.now()));
+      widget.tanggal_awal,
+      widget.tanggal_akhir,
+    );
     setState(() {
       transaksi = data;
     });
@@ -38,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
         automaticallyImplyLeading: false,
         elevation: 0,
         title: Text(
-          "Laporan Hari Ini",
+          "Cari Transaksi",
           style: TextStyle(
             fontFamily: 'OkineSans',
             fontSize: 22,
@@ -52,14 +60,6 @@ class _MainScreenState extends State<MainScreen> {
             },
             icon: Icon(
               Icons.refresh,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-            },
-            icon: Icon(
-              Icons.logout,
             ),
           ),
         ],
@@ -76,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
             Container(
               margin: EdgeInsets.only(left: 25),
               child: Text(
-                "${DateFormat('dd MMMM yyyy').format(DateTime.now())}",
+                "${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.tanggal_awal))} - ${DateFormat('dd MMMM yyyy').format(DateTime.parse(widget.tanggal_akhir))}",
                 style: TextStyle(
                   fontFamily: 'OkineSans',
                   fontSize: 18,
@@ -88,8 +88,8 @@ class _MainScreenState extends State<MainScreen> {
               height: 20,
             ),
             TransaksiCard(
-              tanggal_awal: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-              tanggal_akhir: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+              tanggal_awal: widget.tanggal_awal,
+              tanggal_akhir: widget.tanggal_akhir,
             ),
           ],
         ),

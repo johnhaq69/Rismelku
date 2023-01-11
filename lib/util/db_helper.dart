@@ -20,9 +20,11 @@ class SqlHelper {
     });
   }
 
-  static Future<List<Map<String, dynamic>>> getTransaksi() async {
+  static Future<List<Map<String, dynamic>>> getTransaksi(
+      String tanggal_awal, String tanggal_akhir) async {
     final db = await SqlHelper.db();
-    return db.query('transaksi');
+    return db.rawQuery('SELECT * FROM transaksi WHERE tanggal BETWEEN ? AND ?',
+        [tanggal_awal, tanggal_akhir]);
   }
 
   static Future<int> tambahTransaksi(
