@@ -1,4 +1,4 @@
 # Rismelku
 
 
-Dengan Rismelku semua transaksi lebih menyenangkan!
+Dengan Ricemillku semua transaksi lebih menyenangkan!
